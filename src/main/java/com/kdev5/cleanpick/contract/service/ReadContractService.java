@@ -1,0 +1,64 @@
+package com.kdev5.cleanpick.contract.service;
+
+import com.kdev5.cleanpick.contract.domain.Contract;
+import com.kdev5.cleanpick.contract.domain.ContractDetail;
+import com.kdev5.cleanpick.contract.domain.exception.ContractException;
+import com.kdev5.cleanpick.contract.infra.ContractDetailRepository;
+import com.kdev5.cleanpick.contract.infra.ContractOptionRepository;
+import com.kdev5.cleanpick.contract.infra.ContractRepository;
+import com.kdev5.cleanpick.contract.service.dto.request.ContractFilterStatus;
+import com.kdev5.cleanpick.contract.service.dto.response.ReadConfirmedMatchingResponseDto;
+import com.kdev5.cleanpick.contract.service.dto.response.ReadContractDetailResponseDto;
+import com.kdev5.cleanpick.contract.service.dto.response.ReadContractOptionResponseDto;
+import com.kdev5.cleanpick.contract.service.dto.response.ReadContractResponseDto;
+import com.kdev5.cleanpick.contract.service.validator.ContractAccessValidator;
+import com.kdev5.cleanpick.global.exception.ErrorCode;
+import com.kdev5.cleanpick.user.domain.Role;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ReadContractService {
+    private final ContractAccessValidator contractAccessValidator;
+    private final ContractRepository contractRepository;
+    private final ContractDetailRepository contractDetailRepository;
+    private final ContractOptionRepository contractOptionRepository;
+
+
+    @Transactional(readOnly = true)
+    public ReadContractDetailResponseDto readContractDetail(Long userId, Role role, Long contractId) {
+        contractAccessValidator.validateReadableBy(contractId, userId, role);
+        ContractDetail contractDetail = contractDetailRepository.findByContractId(contractId).orElseThrow(() -> new ContractException(ErrorCode.CONTRACT_NOT_FOUND));
+        List<ReadContractOptionResponseDto> options = contractOptionRepository.findAllByContractId(contractId).stream()
+                .map(option ->
+                        ReadContractOptionResponseDto.builder()
+                                .name(option.getCleaningOption().getName())
+                                .type(option.getCleaningOption().getType())
+                                .extraPrice(option.getCleaningOption().getExtraPrice())
+                                .extraDuration(option.getCleaningOption().getExtraDuration())
+                                .build()
+                ).toList();
+
+        return ReadContractDetailResponseDto.fromEntity(contractDetail, options);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReadContractResponseDto> readCustomerContracts(Long userId, String role, ContractFilterStatus status, Pageable pageable) {
+        Page<Contract> contracts = contractRepository.findByFilter(userId, role, status, pageable);
+        return contracts.map(ReadContractResponseDto::fromEntity);
+
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReadConfirmedMatchingResponseDto> readManagerCompletedContracts(Long userId, String role, Pageable pageable) {
+        Page<Contract> contracts = contractRepository.findByFilter(userId, role, ContractFilterStatus.COMPLETED, pageable);
+        return contracts.map(ReadConfirmedMatchingResponseDto::fromEntity);
+    }
+}

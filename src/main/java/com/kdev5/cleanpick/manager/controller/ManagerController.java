@@ -31,22 +31,6 @@ public class ManagerController {
 
     private final ManagerService managerService;
 
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<PageResponse<ManagerSearchResponseDto>>> search (
-            @RequestParam(required = false)
-            String cleaning,
-            @RequestParam(required = false)
-            String region,
-            @RequestParam(required = false)
-            String keyword,                             // 검색어
-            @RequestParam(defaultValue = "RECOMMENDATION")
-            SortType sortType,
-            Pageable pageable
-    ) {
-        Page<ManagerSearchResponseDto> result = managerService.searchManagers(cleaning, region, keyword, sortType, pageable);
-        return ResponseEntity.ok(ApiResponse.ok(new PageResponse<>(result)));
-    }
-
     @PostMapping
     @Operation(summary = "최초 매니저 정보 입력", description = "최초 매니저정보가 입력되는 API 이며, 이때 최초로 매니저 레코드가 데이터베이스에 INSERT 됩니다.")
     public ResponseEntity<ApiResponse<ManagerPrivateResponseDto>> enrollManager (

@@ -9,6 +9,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ManagerRepositoryCustom {
 
-    Page<Manager> findManagersByFilter(String cleaning, String region, String keyword, SortType sortType, Pageable pageable);
+
 
 }

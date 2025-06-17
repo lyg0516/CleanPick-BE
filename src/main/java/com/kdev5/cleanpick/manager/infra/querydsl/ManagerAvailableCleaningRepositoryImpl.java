@@ -17,22 +17,4 @@ public class ManagerAvailableCleaningRepositoryImpl implements ManagerAvailableC
 
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public Map<Long, List<String>> loadCleanings(List<Long> managerIds) {
-
-        QManagerAvailableCleaning mac = QManagerAvailableCleaning.managerAvailableCleaning;
-        QCleaning cleaning = QCleaning.cleaning;
-
-        List<Tuple> result = queryFactory
-                .select(mac.manager.id, cleaning.serviceName)
-                .from(mac)
-                .join(mac.cleaning, cleaning)
-                .where(mac.manager.id.in(managerIds))
-                .fetch();
-
-        return result.stream().collect(Collectors.groupingBy(
-                tuple -> tuple.get(mac.manager.id),
-                Collectors.mapping(tuple -> tuple.get(cleaning.serviceName.stringValue()), Collectors.toList())
-        ));
-    }
 }

@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface ManagerAvailableCleaningRepositoryCustom {
 
-    Map<Long, List<String>> loadCleanings(List<Long> managerIds);
+
 }

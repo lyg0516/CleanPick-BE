@@ -15,8 +15,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 import java.time.Duration;
 import java.util.UUID;
 
-// TODO: 추후 배포시 제거하기
-@Profile("s3")
+
 @RequiredArgsConstructor
 @Service
 public class PreSignedUrlService {

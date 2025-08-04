@@ -43,33 +43,16 @@ public class ContractRequestDto {
 
     private String housingType;
 
-    private String pet;
-
-    private String request;
 
 
     //contract_option
     private List<Long> cleaningOptionList;
 
-    //routine_Contract
-    private float discountRate;
 
-    private LocalDateTime contractStartDate;
-
-    private int routineCount;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime time;
-
-    private List<DayOfWeek> dayOfWeek; // JSON 문자열 (예: ["MON", "WED", "FRI"])
-
-
-    public Contract toEntity(Customer customer, Cleaning cleaning, RoutineContract routineContract) {
+    public Contract toEntity(Customer customer, Cleaning cleaning) {
         return Contract.builder()
                 .customer(customer)
                 .cleaning(cleaning)
-                .routineContract(routineContract)
                 .contractDate(contractDate)
                 .longitude(longitude)
                 .latitude(latitude)
@@ -85,8 +68,6 @@ public class ContractRequestDto {
     public ContractDetail toEntity(Contract contract) {
         return ContractDetail.builder()
                 .contract(contract)
-                .pet(pet)
-                .request(request)
                 .housingType(housingType)
                 .build();
     }
@@ -98,16 +79,6 @@ public class ContractRequestDto {
                 .build();
     }
 
-    public RoutineContract toEntity() {
-        return RoutineContract.builder()
-                .discountRate(discountRate)
-                .contractStartDate(contractStartDate)
-                .routineCount(routineCount)
-                .startTime(startTime)
-                .time(time)
-                .dayOfWeek(dayOfWeek)
-                .build();
-    }
 
     public void setContractDate(LocalDateTime contractDate) {
         this.contractDate = contractDate;

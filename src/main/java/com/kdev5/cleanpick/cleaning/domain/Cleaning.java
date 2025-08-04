@@ -1,5 +1,7 @@
 package com.kdev5.cleanpick.cleaning.domain;
 
+import java.util.Objects;
+
 import com.kdev5.cleanpick.cleaning.domain.enumeration.ServiceName;
 import com.kdev5.cleanpick.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -35,5 +37,18 @@ public class Cleaning extends BaseTimeEntity {
 
     private Cleaning(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Cleaning cleaning = (Cleaning)o;
+        return Objects.equals(id, cleaning.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

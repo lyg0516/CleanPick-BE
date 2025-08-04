@@ -20,8 +20,6 @@ import com.kdev5.cleanpick.global.security.auth.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-// TODO: 추후 배포시 제거하기
-@Profile("s3")
 @RestController
 @RequiredArgsConstructor
 public class PreSignedUrlController {

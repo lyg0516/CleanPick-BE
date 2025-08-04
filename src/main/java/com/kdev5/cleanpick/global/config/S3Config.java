@@ -11,8 +11,6 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
-// TODO: s3설정을 하지 않으면 빌드가 안되서 일단 막아놨습니다. 추후 제거
-@Profile("s3")
 @Configuration
 public class S3Config {
 

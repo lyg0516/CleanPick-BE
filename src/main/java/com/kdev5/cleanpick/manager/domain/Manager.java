@@ -80,14 +80,17 @@ public class Manager extends BaseTimeEntity {
         DayOfWeek day = start.getDayOfWeek();
         LocalTime startTime = start.toLocalTime();
         LocalTime endTime = end.toLocalTime();
-
+        System.out.println("start" + start + " end" + end);
         return availableTimes.stream()
-                .filter(t -> t.getDayOfWeek() == day)
+                .filter(t -> t.getDayOfWeek().equals(day))
                 .anyMatch(t -> !startTime.isBefore(t.getStartTime()) && !endTime.isAfter(t.getEndTime()));
     }
 
     public boolean supports(Cleaning cleaning) {
-
+        for(ManagerAvailableCleaning avc:  availableCleanings){
+            System.out.println(avc.getCleaning().getId() +  " " + cleaning.getId());
+            System.out.println(avc.getCleaning().equals(cleaning));
+        }
         return availableCleanings.stream()
                 .anyMatch(ac -> ac.getCleaning().equals(cleaning));
     }

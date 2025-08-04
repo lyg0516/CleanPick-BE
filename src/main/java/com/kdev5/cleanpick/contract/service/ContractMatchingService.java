@@ -82,6 +82,7 @@ public class ContractMatchingService {
 
         //--------------------------1차 필터링
         List<Manager> distanceFiltered = filterManagersByDistanceAndSchedule(lat, lon, start, end);
+        System.out.println("distanceFiltered = " + distanceFiltered);
 
         //--- ----------------------2차 필터링
         Contract contract = contractRepository.findById(contractId).orElseThrow(() -> new ContractNotFoundException(ErrorCode.CONTRACT_NOT_FOUND));
@@ -91,40 +92,12 @@ public class ContractMatchingService {
                 .toList();
 
         List<Nominee> nominees = finalFiltered.stream().map(m -> Nominee.builder().contract(contract).manager(m).build()).collect(Collectors.toList());
+        System.out.println("finalFiltered = " + finalFiltered);
         nomineeBulkRepository.saveAll(nominees);
 
         //TODO: 알림 로직
 
     }
-
-    @Transactional
-    public void requestRoutineCleaning(Long contractId, double lat, double lon, List<LocalDateTime> contractDates) {
-
-        List<Manager> candidateManagers = findAvailableManagersByDistance(lat, lon);
-
-        Contract contract = contractRepository.findById(contractId)
-                .orElseThrow(() -> new ContractNotFoundException(ErrorCode.CONTRACT_NOT_FOUND));
-
-        List<TimeInterval> intervals = contractDates.stream()
-                .map(startDateTime -> new TimeInterval(startDateTime, startDateTime.plusHours(contract.getTotalTime())))
-                .toList();
-
-        List<Manager> finalFiltered = candidateManagers.stream()
-                .filter(manager -> intervals.stream().allMatch(interval ->
-                        intervalTree.isAvailable(manager.getId(), interval)
-                                && manager.isAvailableIn(interval.getStart(), interval.getEnd())))
-                .filter(manager -> manager.supports(contract.getCleaning())).toList();
-
-
-        List<Nominee> nominees = finalFiltered.stream()
-                .map(manager -> Nominee.builder().contract(contract).manager(manager).build())
-                .toList();
-
-        nomineeBulkRepository.saveAll(nominees);
-
-        // TODO: 알림 로직 추가
-    }
-
 
     public List<Manager> filterManagersByDistanceAndSchedule(double lat, double lon, LocalDateTime start, LocalDateTime end) {
         List<Manager> managerIdsByDistance = findAvailableManagersByDistance(lat, lon); // 거리 기반 필터링

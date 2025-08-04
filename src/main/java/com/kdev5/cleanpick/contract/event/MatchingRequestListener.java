@@ -16,21 +16,12 @@ public class MatchingRequestListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleMatching(MatchingRequestEvent event) {
-        if (event.getContractDates() != null) {
-            contractMatchingService.requestRoutineCleaning(
-                    event.getContractId(),
-                    event.getLatitude(),
-                    event.getLongitude(),
-                    event.getContractDates()
-            );
-        } else {
-            contractMatchingService.requestCleaning(
-                    event.getContractId(),
-                    event.getLatitude(),
-                    event.getLongitude(),
-                    event.getStart(),
-                    event.getEnd()
-            );
-        }
+        contractMatchingService.requestCleaning(
+                event.getContractId(),
+                event.getLatitude(),
+                event.getLongitude(),
+                event.getStart(),
+                event.getEnd()
+        );
     }
 }

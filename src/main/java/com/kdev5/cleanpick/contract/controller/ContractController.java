@@ -11,6 +11,7 @@ import com.kdev5.cleanpick.contract.service.dto.request.UpdateContractRequestDto
 import com.kdev5.cleanpick.contract.service.dto.response.*;
 import com.kdev5.cleanpick.global.response.ApiResponse;
 import com.kdev5.cleanpick.global.response.PageResponse;
+import com.kdev5.cleanpick.global.security.annotation.CustomerId;
 import com.kdev5.cleanpick.global.security.auth.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,17 +41,11 @@ public class ContractController {
     // 1. 청소 요청 글 작성
     // 1-1. 1회성 청소
     @PostMapping("/one")
-    public ResponseEntity<ApiResponse<OneContractResponseDto>> createContract(@RequestBody @Valid ContractRequestDto contractDto) {
-        OneContractResponseDto newContract = contractService.createOneContract(contractDto);
+    public ResponseEntity<ApiResponse<OneContractResponseDto>> createContract(@CustomerId Long customerId, @RequestBody @Valid ContractRequestDto contractDto) {
+        OneContractResponseDto newContract = contractService.createOneContract(customerId, contractDto);
         return ResponseEntity.ok(ApiResponse.ok(newContract));
     }
 
-    // 1-2. 정기 청소
-    @PostMapping("/routine")
-    public ResponseEntity<ApiResponse<RoutineContractResponseDto>> createRoutineContract(@RequestBody @Valid ContractRequestDto contractDto) {
-        RoutineContractResponseDto newContracts = contractService.createRoutineContract(contractDto);
-        return ResponseEntity.ok(ApiResponse.ok(newContracts));
-    }
 
     @GetMapping("/{contractId}")
     @Operation(summary = "예약 상세 조회", description = "예약 상세 정보를 확인합니다.")

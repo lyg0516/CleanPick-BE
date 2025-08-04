@@ -19,7 +19,7 @@ public interface ManagerRepository extends JpaRepository<Manager, Long>, Manager
 
     @Query(value = """
                 SELECT *
-                FROM Manager m
+                FROM manager m
                 WHERE ST_Distance_Sphere(
                     POINT(m.longitude, m.latitude),
                     POINT(:lon, :lat)
